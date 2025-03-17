@@ -432,3 +432,58 @@ const RiskQuestion = ({ answer, onChange, onNext, onPrev }) => {
     </div>
   );
 };
+const MarketReactionQuestion = ({ answer, onChange, onNext, onPrev }) => {
+  return (
+    <div className="question-card">
+      <h2>How would you react if your investment lost 20% in a short time?</h2>
+      <p>Your reaction to market downturns helps gauge your actual risk tolerance.</p>
+      <div className="options-grid">
+        <label className={`radio-option ${answer === 'sell' ? 'selected' : ''}`}>
+          <input
+            type="radio"
+            name="marketReaction"
+            value="sell"
+            checked={answer === 'sell'}
+            onChange={() => onChange('sell')}
+          />
+          <span className="option-text">Sell everything immediately to avoid further losses</span>
+        </label>
+        <label className={`radio-option ${answer === 'hold' ? 'selected' : ''}`}>
+          <input
+            type="radio"
+            name="marketReaction"
+            value="hold"
+            checked={answer === 'hold'}
+            onChange={() => onChange('hold')}
+          />
+          <span className="option-text">Hold and wait to see if the market recovers</span>
+        </label>
+        <label className={`radio-option ${answer === 'buy' ? 'selected' : ''}`}>
+          <input
+            type="radio"
+            name="marketReaction"
+            value="buy"
+            checked={answer === 'buy'}
+            onChange={() => onChange('buy')}
+          />
+          <span className="option-text">Buy more because I believe in long-term growth</span>
+        </label>
+      </div>
+      <div className="navigation">
+        <button
+          onClick={onPrev}
+          className="prev-button"
+        >
+          Previous
+        </button>
+        <button
+          onClick={onNext}
+          disabled={!answer}
+          className="next-button"
+        >
+          Next
+        </button>
+      </div>
+    </div>
+  );
+};
