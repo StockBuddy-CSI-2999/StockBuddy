@@ -601,3 +601,86 @@ const InvolvementQuestion = ({ answer, options, onAnswerChange, onOptionsChange,
     </div>
   );
 };
+// Results Component
+const calculateInvestorProfile = (answers) => {
+  // Scoring system to determine investor profile
+  let score = 0;
+
+  // Age scoring
+  if (answers.age === 'under25') score += 3;
+  else if (answers.age === '25-35') score += 2;
+  else if (answers.age === '36-50') score += 1;
+
+  // Goal scoring
+  if (answers.goal === 'long-term') score += 3;
+  else if (answers.goal === 'medium-term') score += 2;
+  else if (answers.goal === 'short-term') score += 0;
+
+  // Savings scoring
+  if (answers.savings === 'more50k') score += 1;
+
+  // Risk tolerance scoring
+  if (answers.riskTolerance === 'high') score += 3;
+  else if (answers.riskTolerance === 'moderate') score += 2;
+  else if (answers.riskTolerance === 'low') score += 0;
+  // Market reaction scoring
+  if (answers.marketReaction === 'buy') score += 3;
+  else if (answers.marketReaction === 'hold') score += 1;
+  else if (answers.marketReaction === 'sell') score -= 1;
+
+  // Involvement scoring
+  if (answers.involvement === 'active') score += 2;
+  else if (answers.involvement === 'somewhat') score += 1;
+
+  // Investment options scoring
+  if (answers.options.includes('crypto')) score += 2;
+  if (answers.options.includes('stocks')) score += 1;
+  if (answers.options.includes('index')) score += 0.5;
+
+  // Determine profile based on score
+  if (score <= 4) {
+    return {
+      type: 'Conservative Saver',
+      focus: 'Capital preservation with minimal risk',
+      investments: 'High-yield savings accounts, certificates of deposit (CDs), government bonds',
+      strategy: 'Low-volatility investments with steady, predictable returns',
+      description: 'You prioritize safety and stability over growth potential. Your investment approach focuses on preserving capital while generating modest, reliable income.',
+      color: 'blue'
+    };
+} else if (score <= 8) {
+    return {
+      type: 'Balanced Investor',
+      focus: 'Stability with moderate growth potential',
+      investments: 'A mix of index funds, ETFs, blue-chip stocks, and bonds',
+      strategy: 'A diversified portfolio that balances risk and reward',
+      description: 'You seek a balance between growth and security. Your portfolio should include both stable income-producing assets and growth-oriented investments.',
+      color: 'green'
+    };
+  } else if (score <= 12) {
+    return {
+      type: 'Growth Seeker',
+      focus: 'Long-term wealth accumulation with higher returns',
+      investments: 'Growth stocks, diversified ETFs, real estate investment trusts (REITs)',
+      strategy: 'A growth-focused approach that prioritizes appreciation over short-term stability',
+      description: 'You emphasize long-term growth over current income. Your investment strategy focuses on capital appreciation with a higher tolerance for market fluctuations.',
+      color: 'purple'
+    };
+  } else {
+    return {
+      type: 'Aggressive Investor',
+      focus: 'Maximizing returns through high-risk investments',
+      investments: 'Individual stocks, emerging markets, cryptocurrency, venture capital opportunities',
+      strategy: 'High-risk, high-reward investments with active portfolio management',
+      description: 'You aim for maximum returns and are willing to accept significant volatility. Your approach involves actively seeking opportunities with high growth potential.',
+      color: 'red'
+    };
+  }
+};
+
+
+
+
+
+
+
+
