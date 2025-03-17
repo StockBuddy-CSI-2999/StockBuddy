@@ -676,7 +676,76 @@ const calculateInvestorProfile = (answers) => {
     };
   }
 };
+const ResultsPage = ({ profile, onReset }) => {
+  const getHeaderClass = () => {
+    switch(profile.color) {
+      case 'blue': return 'result-header blue';
+      case 'green': return 'result-header green';
+      case 'purple': return 'result-header purple';
+      case 'red': return 'result-header red';
+      default: return 'result-header blue';
+    }
+  };
 
+  return (
+    <div className="results-container">
+      <div className="result-card">
+        <div className={getHeaderClass()}>
+          <h2>Your Investment Profile</h2>
+          <h3>{profile.type}</h3>
+        </div>
+
+        <div className="result-content">
+          <div className="result-summary">
+            <h4>Profile Summary</h4>
+            <p>{profile.description}</p>
+
+            <div className="profile-cards">
+              <div className="profile-card">
+                <h5>Investment Focus</h5>
+                <p>{profile.focus}</p>
+              </div>
+              <div className="profile-card">
+                <h5>Recommended Investments</h5>
+                <p>{profile.investments}</p>
+              </div>
+              <div className="profile-card">
+                <h5>Strategy</h5>
+                <p>{profile.strategy}</p>
+              </div>
+            </div>
+          </div>
+<div className="next-steps">
+            <h4>Next Steps</h4>
+            <div className="next-steps-container">
+              <h5>Start Your Investment Journey</h5>
+              <ul>
+                <li>Research financial institutions that offer the investment types recommended for your profile</li>
+                <li>Consider consulting with a financial advisor for personalized guidance</li>
+                <li>Start with a small amount and gradually increase your investments as you gain confidence</li>
+                <li>Regularly review your portfolio performance and adjust as needed</li>
+              </ul>
+              <p className="disclaimer">
+                Remember that all investments carry some level of risk, and past performance is not indicative of future results.
+              </p>
+            </div>
+          </div>
+
+          <div className="reset-container">
+            <button
+              onClick={onReset}
+              className="reset-button"
+            >
+              Take the Quiz Again
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default App;
 
 
 
