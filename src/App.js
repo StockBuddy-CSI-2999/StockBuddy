@@ -487,3 +487,117 @@ const MarketReactionQuestion = ({ answer, onChange, onNext, onPrev }) => {
     </div>
   );
 };
+const InvolvementQuestion = ({ answer, options, onAnswerChange, onOptionsChange, onSubmit, onPrev }) => {
+  return (
+    <div className="question-card">
+      <h2>How involved do you want to be in managing your investments?</h2>
+      <p>Your preferred level of involvement will help determine suitable investment vehicles.</p>
+      <div className="options-grid">
+        <label className={`radio-option ${answer === 'hands-off' ? 'selected' : ''}`}>
+          <input
+            type="radio"
+            name="involvement"
+            value="hands-off"
+            checked={answer === 'hands-off'}
+            onChange={() => onAnswerChange('hands-off')}
+          />
+          <span className="option-text">Hands-off – I prefer automated, low-maintenance strategies</span>
+        </label>
+        <label className={`radio-option ${answer === 'somewhat' ? 'selected' : ''}`}>
+          <input
+            type="radio"
+            name="involvement"
+            value="somewhat"
+            checked={answer === 'somewhat'}
+            onChange={() => onAnswerChange('somewhat')}
+          />
+          <span className="option-text">Somewhat involved – I'll review my portfolio occasionally</span>
+        </label>
+        <label className={`radio-option ${answer === 'active' ? 'selected' : ''}`}>
+          <input
+            type="radio"
+            name="involvement"
+            value="active"
+            checked={answer === 'active'}
+            onChange={() => onAnswerChange('active')}
+          />
+          <span className="option-text">Actively involved – I want to research and manage my own investments</span>
+        </label>
+      </div>
+      
+      <div className="checkbox-section">
+        <h3>Which of these investment options do you feel comfortable with?</h3>
+        <p>Select all that apply</p>
+        
+        <div className="options-grid">
+          <label className={`checkbox-option ${options.includes('savings') ? 'selected' : ''}`}>
+            <input
+              type="checkbox"
+              name="options"
+              value="savings"
+              checked={options.includes('savings')}
+              onChange={() => onOptionsChange('savings')}
+            />
+            <span className="option-text">High-yield savings accounts & CDs</span>
+          </label>
+          <label className={`checkbox-option ${options.includes('bonds') ? 'selected' : ''}`}>
+            <input
+              type="checkbox"
+              name="options"
+              value="bonds"
+              checked={options.includes('bonds')}
+              onChange={() => onOptionsChange('bonds')}
+            />
+            <span className="option-text">Bonds & mutual funds</span>
+          </label>
+          <label className={`checkbox-option ${options.includes('index') ? 'selected' : ''}`}>
+            <input
+              type="checkbox"
+              name="options"
+              value="index"
+              checked={options.includes('index')}
+              onChange={() => onOptionsChange('index')}
+            />
+            <span className="option-text">Index funds & ETFs</span>
+          </label>
+          <label className={`checkbox-option ${options.includes('stocks') ? 'selected' : ''}`}>
+            <input
+              type="checkbox"
+              name="options"
+              value="stocks"
+              checked={options.includes('stocks')}
+              onChange={() => onOptionsChange('stocks')}
+            />
+            <span className="option-text">Individual stocks & real estate</span>
+          </label>
+          <label className={`checkbox-option ${options.includes('crypto') ? 'selected' : ''}`}>
+            <input
+              type="checkbox"
+              name="options"
+              value="crypto"
+              checked={options.includes('crypto')}
+              onChange={() => onOptionsChange('crypto')}
+            />
+            <span className="option-text">Cryptocurrency & venture capital</span>
+          </label>
+        </div>
+      </div>
+      
+      <div className="navigation">
+        <button
+          onClick={onPrev}
+          className="prev-button"
+        >
+          Previous
+        </button>
+        <button
+          onClick={onSubmit}
+          disabled={!answer || options.length === 0}
+          className="submit-button"
+        >
+          Get Your Results
+        </button>
+      </div>
+    </div>
+  );
+};
