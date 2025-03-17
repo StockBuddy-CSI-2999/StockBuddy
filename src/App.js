@@ -149,3 +149,47 @@ const App = () => {
     </div>
   );
 };
+
+// Landing Page Component
+const LandingPage = ({ onStart }) => {
+  return (
+    <div className="landing-page">
+      <div className="logo">$</div>
+      <h1>StockBuddy</h1>
+      <h2>Your Personal Investment Guide</h2>
+      <p>
+        Welcome to StockBuddy, your friendly guide to the world of investing. 
+        Answer a few questions about your financial situation and goals, 
+        and we'll recommend a personalized investment strategy just for you.
+      </p>
+      <div className="feature-cards">
+        <div className="feature-card">
+          <div className="feature-icon">🛡️</div>
+          <h3>Simple to Understand</h3>
+          <p>Complex financial concepts explained in plain language</p>
+        </div>
+        <div className="feature-card">
+          <div className="feature-icon">👥</div>
+          <h3>Personalized Advice</h3>
+          <p>Custom recommendations based on your specific situation</p>
+        </div>
+        <div className="feature-card">
+          <div className="feature-icon">📈</div>
+          <h3>Growth Strategies</h3>
+          <p>Learn how to grow your wealth over time</p>
+        </div>
+        <div className="feature-card">
+          <div className="feature-icon">🏆</div>
+          <h3>Expert Guidance</h3>
+          <p>Backed by proven investment principles</p>
+        </div>
+      </div>
+      <button
+        onClick={onStart}
+        className="start-button"
+      >
+        Start Your Journey
+      </button>
+    </div>
+  );
+};
