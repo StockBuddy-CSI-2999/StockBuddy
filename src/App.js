@@ -310,3 +310,125 @@ const GoalQuestion = ({ answer, onChange, onNext, onPrev }) => {
     </div>
   );
 };
+
+const SavingsQuestion = ({ answer, onChange, onNext, onPrev }) => {
+  return (
+    <div className="question-card">
+      <h2>How much do you currently have saved for investing?</h2>
+      <p>Your current savings level helps determine appropriate investment vehicles.</p>
+      <div className="options-grid">
+        <label className={`radio-option ${answer === 'less1k' ? 'selected' : ''}`}>
+          <input
+            type="radio"
+            name="savings"
+            value="less1k"
+            checked={answer === 'less1k'}
+            onChange={() => onChange('less1k')}
+          />
+          <span className="option-text">Less than $1,000</span>
+        </label>
+        <label className={`radio-option ${answer === '1k-10k' ? 'selected' : ''}`}>
+          <input
+            type="radio"
+            name="savings"
+            value="1k-10k"
+            checked={answer === '1k-10k'}
+            onChange={() => onChange('1k-10k')}
+          />
+          <span className="option-text">$1,000 - $10,000</span>
+        </label>
+        <label className={`radio-option ${answer === '10k-50k' ? 'selected' : ''}`}>
+          <input
+            type="radio"
+            name="savings"
+            value="10k-50k"
+            checked={answer === '10k-50k'}
+            onChange={() => onChange('10k-50k')}
+          />
+          <span className="option-text">$10,000 - $50,000</span>
+        </label>
+        <label className={`radio-option ${answer === 'more50k' ? 'selected' : ''}`}>
+          <input
+            type="radio"
+            name="savings"
+            value="more50k"
+            checked={answer === 'more50k'}
+            onChange={() => onChange('more50k')}
+          />
+          <span className="option-text">More than $50,000</span>
+        </label>
+      </div>
+      <div className="navigation">
+        <button
+          onClick={onPrev}
+          className="prev-button"
+        >
+          Previous
+        </button>
+        <button
+          onClick={onNext}
+          disabled={!answer}
+          className="next-button"
+        >
+          Next
+        </button>
+      </div>
+    </div>
+  );
+};
+
+const RiskQuestion = ({ answer, onChange, onNext, onPrev }) => {
+  return (
+    <div className="question-card">
+      <h2>What level of risk are you comfortable with?</h2>
+      <p>Your risk tolerance is a key factor in determining your investment strategy.</p>
+      <div className="options-grid">
+        <label className={`radio-option ${answer === 'low' ? 'selected' : ''}`}>
+          <input
+            type="radio"
+            name="riskTolerance"
+            value="low"
+            checked={answer === 'low'}
+            onChange={() => onChange('low')}
+          />
+          <span className="option-text">Minimal risk – I want my money to be safe, even if returns are low</span>
+        </label>
+        <label className={`radio-option ${answer === 'moderate' ? 'selected' : ''}`}>
+          <input
+            type="radio"
+            name="riskTolerance"
+            value="moderate"
+            checked={answer === 'moderate'}
+            onChange={() => onChange('moderate')}
+          />
+          <span className="option-text">Moderate risk – I'm okay with some ups and downs for steady growth</span>
+        </label>
+        <label className={`radio-option ${answer === 'high' ? 'selected' : ''}`}>
+          <input
+            type="radio"
+            name="riskTolerance"
+            value="high"
+            checked={answer === 'high'}
+            onChange={() => onChange('high')}
+          />
+          <span className="option-text">High risk – I'm willing to take big risks for high potential returns</span>
+        </label>
+      </div>
+      <div className="navigation">
+        <button
+          onClick={onPrev}
+          className="prev-button"
+        >
+          Previous
+        </button>
+        <button
+          onClick={onNext}
+          disabled={!answer}
+          className="next-button"
+        >
+          Next
+        </button>
+      </div>
+    </div>
+  );
+};
