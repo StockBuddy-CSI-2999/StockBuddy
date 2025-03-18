@@ -436,3 +436,67 @@ body {
   color: #2855c0;
   margin-bottom: 16px;
 }
+.next-steps-container ul {
+  margin-left: 24px;
+  margin-bottom: 16px;
+}
+
+.next-steps-container li {
+  margin-bottom: 8px;
+  color: #444;
+}
+
+.disclaimer {
+  font-size: 14px;
+  color: #777;
+  font-style: italic;
+}
+
+.reset-container {
+  text-align: center;
+  margin-top: 40px;
+}
+
+.reset-button {
+  background-color: #f0f0f0;
+  color: #555;
+  border: none;
+  padding: 12px 24px;
+  border-radius: 8px;
+  font-weight: 600;
+}
+
+.reset-button:hover {
+  background-color: #e0e0e0;
+}
+
+/* Responsive styles */
+@media (max-width: 768px) {
+  .landing-page h1 {
+    font-size: 36px;
+  }
+  
+  .landing-page h2 {
+    font-size: 20px;
+  }
+  
+  .question-card {
+    padding: 24px;
+  }
+  
+  .options-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .feature-cards {
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  }
+  
+  .result-header h3 {
+    font-size: 28px;
+  }
+  
+  .profile-cards {
+    grid-template-columns: 1fr;
+  }
+}
