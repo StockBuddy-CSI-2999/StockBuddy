@@ -319,3 +319,120 @@ body {
 .next-button:hover, .submit-button:hover {
   background-color: #2855c0;
 }
+
+.next-button:disabled, .submit-button:disabled {
+  background-color: #a0a0a0;
+  cursor: not-allowed;
+}
+
+/* Results Page */
+.results-container {
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.result-card {
+  background-color: white;
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+}
+
+.result-header {
+  padding: 32px 24px;
+  text-align: center;
+  color: white;
+}
+
+.result-header.blue {
+  background-color: #3166db;
+}
+
+.result-header.green {
+  background-color: #2e9d5a;
+}
+
+.result-header.purple {
+  background-color: #7c3aed;
+}
+
+.result-header.red {
+  background-color: #e53e3e;
+}
+
+.result-header h2 {
+  font-size: 24px;
+  font-weight: 600;
+  margin-bottom: 12px;
+}
+
+.result-header h3 {
+  font-size: 36px;
+  font-weight: 700;
+}
+
+.result-content {
+  padding: 32px;
+}
+
+.result-summary {
+  margin-bottom: 40px;
+}
+
+.result-summary h4, .next-steps h4 {
+  font-size: 20px;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 16px;
+}
+
+.result-summary > p {
+  color: #555;
+  margin-bottom: 24px;
+}
+
+.profile-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 16px;
+  margin-top: 24px;
+}
+
+.profile-card {
+  background-color: #f8f9fa;
+  border: 1px solid #e9ecef;
+  border-radius: 8px;
+  padding: 20px 16px;
+}
+
+.profile-card h5 {
+  font-size: 16px;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 12px;
+}
+
+.profile-card p {
+  font-size: 14px;
+  color: #555;
+}
+
+.next-steps {
+  margin-top: 24px;
+  padding-top: 24px;
+  border-top: 1px solid #eaeaea;
+}
+
+.next-steps-container {
+  background-color: #f0f7ff;
+  border: 1px solid #d0e3ff;
+  border-radius: 8px;
+  padding: 24px;
+}
+
+.next-steps-container h5 {
+  font-size: 18px;
+  font-weight: 600;
+  color: #2855c0;
+  margin-bottom: 16px;
+}
