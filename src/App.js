@@ -384,3 +384,109 @@ const App = () => {
      </div>
    );
  };
+// Main application render
+ return (
+   <div className="app-container">
+     <div className="app-header">
+       <div className="logo" onClick={() => {setActiveTab('questionnaire'); setStep(0);}}><span>$</span></div>
+       <h1 className="site-title" onClick={() => {setActiveTab('questionnaire'); setStep(0);}}>StockBuddy</h1>
+       <nav className="main-nav">
+         <ul>
+           <li className={activeTab === 'questionnaire' ? 'active' : ''} onClick={() => setActiveTab('questionnaire')}>Questionnaire</li>
+           <li className={activeTab === 'education' ? 'active' : ''} onClick={() => setActiveTab('education')}>Learn</li>
+           <li className={activeTab === 'calculator' ? 'active' : ''} onClick={() => setActiveTab('calculator')}>Calculator</li>
+           <li className={activeTab === 'community' ? 'active' : ''} onClick={() => setActiveTab('community')}>Community</li>
+           <li className={activeTab === 'profile' ? 'active' : ''} onClick={() => setActiveTab('profile')}>Profile</li>
+         </ul>
+       </nav>
+     </div>
+    
+     <div className="container">
+       {activeTab === 'questionnaire' && (
+         <>
+           {step > 0 && step < 7 && (
+             <div className="progress-container">
+               <div className="progress-bar">
+                 <div
+                   className="progress"
+                   style={{ width: `${(step / 6) * 100}%` }}
+                 />
+               </div>
+               <div className="progress-text">
+                 Question {step} of 6
+               </div>
+             </div>
+           )}
+           {renderStep()}
+         </>
+       )}
+      
+       {activeTab === 'education' && renderEducationalContent()}
+       {activeTab === 'calculator' && renderCalculator()}
+       {activeTab === 'community' && renderCommunityForum()}
+       {activeTab === 'profile' && renderUserProfile()}
+     </div>
+    
+     <footer className="app-footer">
+       <div className="footer-content">
+         <div className="footer-logo">StockBuddy</div>
+         <div className="footer-links">
+           <a href="#about">About Us</a>
+           <a href="#terms">Terms of Use</a>
+           <a href="#privacy">Privacy Policy</a>
+           <a href="#contact">Contact</a>
+         </div>
+         <div className="footer-legal">© {new Date().getFullYear()} StockBuddy. All rights reserved. Educational use only. Not financial advice.</div>
+       </div>
+     </footer>
+   </div>
+ );
+};
+
+
+// Landing Page Component
+const LandingPage = ({ onStart }) => {
+ return (
+   <div className="landing-page">
+     <div className="logo">$</div>
+     <h1>StockBuddy</h1>
+     <h2>Your Personal Investment Guide</h2>
+     <p>
+       Welcome to StockBuddy, your friendly guide to the world of investing.
+       Answer a few questions about your financial situation and goals,
+       and we'll recommend a personalized investment strategy just for you.
+     </p>
+     <div className="feature-cards">
+       <div className="feature-card">
+         <div className="feature-icon">🛡️</div>
+         <h3>Simple to Understand</h3>
+         <p>Complex financial concepts explained in plain language</p>
+       </div>
+       <div className="feature-card">
+         <div className="feature-icon">👥</div>
+         <h3>Personalized Advice</h3>
+         <p>Custom recommendations based on your specific situation</p>
+       </div>
+       <div className="feature-card">
+         <div className="feature-icon">📈</div>
+         <h3>Growth Strategies</h3>
+         <p>Learn how to grow your wealth over time</p>
+       </div>
+       <div className="feature-card">
+         <div className="feature-icon">🏆</div>
+         <h3>Expert Guidance</h3>
+         <p>Backed by proven investment principles</p>
+       </div>
+     </div>
+     <button
+       onClick={onStart}
+       className="start-button"
+     >
+       Start Your Journey
+     </button>
+   </div>
+ );
+};
+
+
+
