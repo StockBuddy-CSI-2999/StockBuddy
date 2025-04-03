@@ -132,3 +132,144 @@ const App = () => {
     }
   };
 
+// Render the appropriate component based on current step
+  const renderStep = () => {
+    switch (step) {
+      case 0:
+        return <LandingPage onStart={() => goToNext()} />;
+      case 1:
+        return (
+          <AgeQuestion 
+            answer={answers.age} 
+            onChange={(value) => handleAnswerChange('age', value)} 
+            onNext={goToNext}
+          />
+        );
+      case 2:
+        return (
+          <GoalQuestion 
+            answer={answers.goal} 
+            onChange={(value) => handleAnswerChange('goal', value)} 
+            onNext={goToNext}
+            onPrev={goToPrevious}
+          />
+        );
+      case 3:
+        return (
+          <SavingsQuestion 
+            answer={answers.savings} 
+            onChange={(value) => handleAnswerChange('savings', value)} 
+            onNext={goToNext}
+            onPrev={goToPrevious}
+          />
+        );
+      case 4:
+        return (
+          <RiskQuestion 
+            answer={answers.riskTolerance} 
+            onChange={(value) => handleAnswerChange('riskTolerance', value)} 
+            onNext={goToNext}
+            onPrev={goToPrevious}
+          />
+        );
+      case 5:
+        return (
+          <MarketReactionQuestion 
+            answer={answers.marketReaction} 
+            onChange={(value) => handleAnswerChange('marketReaction', value)} 
+            onNext={goToNext}
+            onPrev={goToPrevious}
+          />
+        );
+      case 6:
+        return (
+          <InvolvementQuestion 
+            answer={answers.involvement} 
+            options={answers.options}
+            onAnswerChange={(value) => handleAnswerChange('involvement', value)}
+            onOptionsChange={handleOptionsChange}
+            onSubmit={handleSubmit}
+            onPrev={goToPrevious}
+          />
+        );
+      case 7:
+        return <ResultsPage profile={result} onReset={resetQuiz} />;
+      default:
+        return <LandingPage onStart={() => goToNext()} />;
+    }
+  };
+  
+  // Render educational content based on current page
+  const renderEducationalContent = () => {
+    switch(page) {
+      case 0:
+        return <IntroductionPage onNext={nextEducationPage} />;
+      case 1:
+        return <InvestmentOptionsPage onNext={nextEducationPage} onPrev={prevEducationPage} />;
+      case 2:
+        return <QuestionnaireExplanationPage onNext={nextEducationPage} onPrev={prevEducationPage} />;
+      case 3:
+        return <MinimizeRiskPage onPrev={prevEducationPage} />;
+      default:
+        return <IntroductionPage onNext={nextEducationPage} />;
+    }
+  };
+  
+  // Render calculator component
+  const renderCalculator = () => {
+    return (
+      <div className="calculator-container">
+        <h2>Investment Growth Calculator</h2>
+        <p>See how your investments could grow over time with the power of compound interest.</p>
+        
+        <div className="calculator-input">
+          <div className="input-group">
+            <label htmlFor="investment-amount">Initial Investment ($)</label>
+            <input
+              type="number"
+              id="investment-amount"
+              value={investmentAmount}
+              onChange={(e) => setInvestmentAmount(Number(e.target.value))}
+              min="0"
+            />
+          </div>
+          
+          <div className="input-group">
+            <label htmlFor="investment-years">Time Period (Years)</label>
+            <input
+              type="number"
+              id="investment-years"
+              value={investmentYears}
+              onChange={(e) => setInvestmentYears(Number(e.target.value))}
+              min="1"
+              max="50"
+            />
+          </div>
+          
+          <div className="input-group">
+            <label htmlFor="investment-rate">Estimated Annual Return (%)</label>
+            <input
+              type="number"
+              id="investment-rate"
+              value={investmentRate}
+              onChange={(e) => setInvestmentRate(Number(e.target.value))}
+              min="0"
+              max="20"
+              step="0.1"
+            />
+          </div>
+          
+          <button className="calculate-button" onClick={calculateInvestment}>Calculate</button>
+        </div>
+        
+        {calculatedAmount && (
+          <div className="calculator-result">
+            <h3>Projected Value</h3>
+            <div className="result-value">${Number(calculatedAmount).toLocaleString()}</div>
+            <p>Your initial investment of ${investmentAmount.toLocaleString()} could grow to ${Number(calculatedAmount).toLocaleString()} after {investmentYears} years at an average annual return of {investmentRate}%.</p>
+            <p className="disclaimer">This is a simplified calculation for educational purposes only. Actual results may vary due to various factors including market fluctuations, fees, and taxes.</p>
+          </div>
+        )}
+      </div>
+    );
+  };
