@@ -273,3 +273,114 @@ const App = () => {
       </div>
     );
   };
+// Render user profile component
+ const renderUserProfile = () => {
+   return (
+     <div className="profile-container">
+       <div className="profile-header">
+         <div className="profile-avatar">
+           <span>{userProfile.name.charAt(0)}</span>
+         </div>
+         <div className="profile-details">
+           <h2>{userProfile.name}</h2>
+           <p>{userProfile.email}</p>
+         </div>
+       </div>
+      
+       <div className="profile-section">
+         <h3>Investment Profile</h3>
+         {result ? (
+           <div className="profile-info">
+             <p><strong>Your investor type:</strong> {result.type}</p>
+             <p><strong>Focus:</strong> {result.focus}</p>
+             <p><strong>Strategy:</strong> {result.strategy}</p>
+           </div>
+         ) : (
+           <p>Take the investment questionnaire to determine your investor profile.</p>
+         )}
+       </div>
+      
+       <div className="profile-section">
+         <h3>Portfolio Tracker</h3>
+         <div className="portfolio-summary">
+           <div className="portfolio-stat">
+             <span className="stat-label">Portfolio Value</span>
+             <span className="stat-value">$0.00</span>
+           </div>
+           <div className="portfolio-stat">
+             <span className="stat-label">Monthly Contribution</span>
+             <span className="stat-value">$0.00</span>
+           </div>
+           <div className="portfolio-stat">
+             <span className="stat-label">Projected Annual Growth</span>
+             <span className="stat-value">0%</span>
+           </div>
+         </div>
+         <p className="profile-note">Feature coming soon: Link your investment accounts to track your portfolio performance.</p>
+       </div>
+      
+       <div className="profile-section">
+         <h3>Saved Articles</h3>
+         {userProfile.savedArticles.length > 0 ? (
+           <ul className="saved-articles">
+             {userProfile.savedArticles.map((article, index) => (
+               <li key={index}>{article}</li>
+             ))}
+           </ul>
+         ) : (
+           <p>You haven't saved any articles yet. Browse the educational content and bookmark articles that interest you.</p>
+         )}
+       </div>
+     </div>
+   );
+ };
+  // Render community forum component
+ const renderCommunityForum = () => {
+   return (
+     <div className="forum-container">
+       <h2>Community Forum</h2>
+       <p>Connect with other investors, ask questions, and share experiences.</p>
+      
+       <div className="forum-post-button">
+         <button className="post-button">+ New Discussion</button>
+       </div>
+      
+       <div className="forum-filter">
+         <select className="filter-dropdown">
+           <option>Recent Discussions</option>
+           <option>Most Replies</option>
+           <option>Beginner Questions</option>
+           <option>Advanced Topics</option>
+         </select>
+       </div>
+      
+       <div className="forum-posts">
+         {forumPosts.map(post => (
+           <div className="forum-post" key={post.id}>
+             <div className="post-header">
+               <h3 className="post-title">{post.title}</h3>
+               <span className="post-meta">Posted by {post.author} · {post.timestamp}</span>
+             </div>
+             <p className="post-content">{post.content}</p>
+            
+             <div className="post-actions">
+               <button className="action-button">Reply</button>
+               <span className="reply-count">{post.replies.length} replies</span>
+             </div>
+            
+             {post.replies.length > 0 && (
+               <div className="post-replies">
+                 {post.replies.map((reply, index) => (
+                   <div className="reply" key={index}>
+                     <span className="reply-author">{reply.author}</span>
+                     <p className="reply-content">{reply.content}</p>
+                   </div>
+                 ))}
+               </div>
+             )}
+           </div>
+         ))}
+       </div>
+     </div>
+   );
+ };
