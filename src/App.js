@@ -1265,4 +1265,148 @@ const SavingsQuestion = ({ answer, onChange, onNext, onPrev }) => {
    margin-bottom: 16px;
  }
 }
+// Results Component
+const calculateInvestorProfile = (answers) => {
+ // Scoring system to determine investor profile
+ let score = 0;
+  // Age scoring
+ if (answers.age === 'under25') score += 3;
+ else if (answers.age === '25-35') score += 2;
+ else if (answers.age === '36-50') score += 1;
+  // Goal scoring
+ if (answers.goal === 'long-term') score += 3;
+ else if (answers.goal === 'medium-term') score += 2;
+ else if (answers.goal === 'short-term') score += 0;
+  // Savings scoring
+ if (answers.savings === 'more50k') score += 1;
+  // Risk tolerance scoring
+ if (answers.riskTolerance === 'high') score += 3;
+ else if (answers.riskTolerance === 'moderate') score += 2;
+ else if (answers.riskTolerance === 'low') score += 0;
+  // Market reaction scoring
+ if (answers.marketReaction === 'buy') score += 3;
+ else if (answers.marketReaction === 'hold') score += 1;
+ else if (answers.marketReaction === 'sell') score -= 1;
+  // Involvement scoring
+ if (answers.involvement === 'active') score += 2;
+ else if (answers.involvement === 'somewhat') score += 1;
+  // Investment options scoring
+ if (answers.options.includes('crypto')) score += 2;
+ if (answers.options.includes('stocks')) score += 1;
+ if (answers.options.includes('index')) score += 0.5;
+  // Determine profile based on score
+ if (score <= 4) {
+   return {
+     type: 'Conservative Saver',
+     focus: 'Capital preservation with minimal risk',
+     investments: 'High-yield savings accounts, certificates of deposit (CDs), government bonds',
+     strategy: 'Low-volatility investments with steady, predictable returns',
+     description: 'You prioritize safety and stability over growth potential. Your investment approach focuses on preserving capital while generating modest, reliable income.',
+     color: 'blue'
+   };
+ } else if (score <= 8) {
+   return {
+     type: 'Balanced Investor',
+     focus: 'Stability with moderate growth potential',
+     investments: 'A mix of index funds, ETFs, blue-chip stocks, and bonds',
+     strategy: 'A diversified portfolio that balances risk and reward',
+     description: 'You seek a balance between growth and security. Your portfolio should include both stable income-producing assets and growth-oriented investments.',
+     color: 'green'
+   };
+ } else if (score <= 12) {
+   return {
+     type: 'Growth Seeker',
+     focus: 'Long-term wealth accumulation with higher returns',
+     investments: 'Growth stocks, diversified ETFs, real estate investment trusts (REITs)',
+     strategy: 'A growth-focused approach that prioritizes appreciation over short-term stability',
+     description: 'You emphasize long-term growth over current income. Your investment strategy focuses on capital appreciation with a higher tolerance for market fluctuations.',
+     color: 'purple'
+   };
+ } else {
+   return {
+     type: 'Aggressive Investor',
+     focus: 'Maximizing returns through high-risk investments',
+     investments: 'Individual stocks, emerging markets, cryptocurrency, venture capital opportunities',
+     strategy: 'High-risk, high-reward investments with active portfolio management',
+     description: 'You aim for maximum returns and are willing to accept significant volatility. Your approach involves actively seeking opportunities with high growth potential.',
+     color: 'red'
+   };
+ }
+};
+
+
+const ResultsPage = ({ profile, onReset }) => {
+ const getHeaderClass = () => {
+   switch(profile.color) {
+     case 'blue': return 'result-header blue';
+     case 'green': return 'result-header green';
+     case 'purple': return 'result-header purple';
+     case 'red': return 'result-header red';
+     default: return 'result-header blue';
+   }
+ };
+
+
+ return (
+   <div className="results-container">
+     <div className="result-card">
+       <div className={getHeaderClass()}>
+         <h2>Your Investment Profile</h2>
+         <h3>{profile.type}</h3>
+       </div>
+      
+       <div className="result-content">
+         <div className="result-summary">
+           <h4>Profile Summary</h4>
+           <p>{profile.description}</p>
+          
+           <div className="profile-cards">
+             <div className="profile-card">
+               <h5>Investment Focus</h5>
+               <p>{profile.focus}</p>
+             </div>
+             <div className="profile-card">
+               <h5>Recommended Investments</h5>
+               <p>{profile.investments}</p>
+             </div>
+             <div className="profile-card">
+               <h5>Strategy</h5>
+               <p>{profile.strategy}</p>
+             </div>
+           </div>
+         </div>
+
+
+         <div className="next-steps">
+           <h4>Next Steps</h4>
+           <div className="next-steps-container">
+             <h5>Start Your Investment Journey</h5>
+             <ul>
+               <li>Research financial institutions that offer the investment types recommended for your profile</li>
+               <li>Consider consulting with a financial advisor for personalized guidance</li>
+               <li>Start with a small amount and gradually increase your investments as you gain confidence</li>
+               <li>Regularly review your portfolio performance and adjust as needed</li>
+             </ul>
+             <p className="disclaimer">
+               Remember that all investments carry some level of risk, and past performance is not indicative of future results.
+             </p>
+           </div>
+         </div>
+        
+         <div className="reset-container">
+           <button
+             onClick={onReset}
+             className="reset-button"
+           >
+             Take the Quiz Again
+           </button>
+         </div>
+       </div>
+     </div>
+   </div>
+ );
+};
+
+
+export default App;
 
