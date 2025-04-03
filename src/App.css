@@ -1102,5 +1102,364 @@ body {
 }
 
 
+/* Forum Styles */
+.forum-container {
+ background-color: white;
+ border-radius: 12px;
+ padding: 32px;
+ box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+ max-width: 900px;
+ margin: 0 auto;
+}
+
+
+.forum-container h2 {
+ font-size: 24px;
+ font-weight: 700;
+ color: #333;
+ margin-bottom: 12px;
+}
+
+
+.forum-container > p {
+ color: #666;
+ margin-bottom: 24px;
+}
+
+
+.forum-post-button {
+ margin-bottom: 24px;
+}
+
+
+.post-button {
+ background-color: #3166db;
+ color: white;
+ font-weight: 600;
+ padding: 10px 20px;
+ border: none;
+ border-radius: 6px;
+ cursor: pointer;
+ transition: background-color 0.2s;
+}
+
+
+.post-button:hover {
+ background-color: #2855c0;
+}
+
+
+.forum-filter {
+ margin-bottom: 24px;
+}
+
+
+.filter-dropdown {
+ padding: 10px;
+ border: 1px solid #ddd;
+ border-radius: 4px;
+ width: 200px;
+ font-size: 14px;
+}
+
+
+.forum-posts {
+ display: flex;
+ flex-direction: column;
+ gap: 24px;
+}
+
+
+.forum-post {
+ border: 1px solid #eee;
+ border-radius: 8px;
+ padding: 20px;
+}
+
+
+.post-header {
+ margin-bottom: 12px;
+}
+
+
+.post-title {
+ font-size: 18px;
+ font-weight: 600;
+ color: #333;
+ margin-bottom: 4px;
+}
+
+
+.post-meta {
+ font-size: 14px;
+ color: #777;
+}
+
+
+.post-content {
+ color: #444;
+ margin-bottom: 16px;
+}
+
+
+.post-actions {
+ display: flex;
+ align-items: center;
+ gap: 16px;
+ margin-bottom: 16px;
+}
+
+
+.action-button {
+ background-color: #f0f0f0;
+ border: none;
+ padding: 6px 12px;
+ border-radius: 4px;
+ font-size: 14px;
+ cursor: pointer;
+}
+
+
+.action-button:hover {
+ background-color: #e0e0e0;
+}
+
+
+.reply-count {
+ font-size: 14px;
+ color: #666;
+}
+
+
+.post-replies {
+ background-color: #f9f9f9;
+ border-radius: 8px;
+ padding: 16px;
+}
+
+
+.reply {
+ margin-bottom: 16px;
+ padding-bottom: 16px;
+ border-bottom: 1px solid #eee;
+}
+
+
+.reply:last-child {
+ margin-bottom: 0;
+ padding-bottom: 0;
+ border-bottom: none;
+}
+
+
+.reply-author {
+ font-weight: 600;
+ color: #333;
+ margin-bottom: 4px;
+ display: block;
+}
+
+
+.reply-content {
+ font-size: 14px;
+ color: #444;
+}
+
+
+/* Profile Styles */
+.profile-container {
+ background-color: white;
+ border-radius: 12px;
+ padding: 32px;
+ box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+ max-width: 800px;
+ margin: 0 auto;
+}
+
+
+.profile-header {
+ display: flex;
+ align-items: center;
+ margin-bottom: 32px;
+}
+
+
+.profile-avatar {
+ width: 80px;
+ height: 80px;
+ border-radius: 50%;
+ background-color: #3166db;
+ color: white;
+ display: flex;
+ align-items: center;
+ justify-content: center;
+ font-size: 36px;
+ font-weight: 600;
+ margin-right: 24px;
+}
+
+
+.profile-details h2 {
+ font-size: 24px;
+ font-weight: 700;
+ color: #333;
+ margin-bottom: 4px;
+}
+
+
+.profile-details p {
+ color: #666;
+}
+
+
+.profile-section {
+ margin-bottom: 32px;
+ padding-bottom: 32px;
+ border-bottom: 1px solid #eee;
+}
+
+
+.profile-section:last-child {
+ margin-bottom: 0;
+ padding-bottom: 0;
+ border-bottom: none;
+}
+
+
+.profile-section h3 {
+ font-size: 20px;
+ font-weight: 600;
+ color: #333;
+ margin-bottom: 16px;
+}
+
+
+.profile-info {
+ background-color: #f9f9f9;
+ border-radius: 8px;
+ padding: 20px;
+}
+
+
+.profile-info p {
+ margin-bottom: 12px;
+}
+
+
+.profile-info p:last-child {
+ margin-bottom: 0;
+}
+
+
+.portfolio-summary {
+ display: grid;
+ grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+ gap: 16px;
+ margin-bottom: 16px;
+}
+
+
+.portfolio-stat {
+ background-color: #f0f5ff;
+ border-radius: 8px;
+ padding: 16px;
+ text-align: center;
+}
+
+
+.stat-label {
+ display: block;
+ font-size: 14px;
+ color: #666;
+ margin-bottom: 8px;
+}
+
+
+.stat-value {
+ font-size: 24px;
+ font-weight: 700;
+ color: #3166db;
+}
+
+
+.profile-note {
+ font-style: italic;
+ color: #777;
+ font-size: 14px;
+}
+
+
+.saved-articles {
+ list-style-type: none;
+}
+
+
+.saved-articles li {
+ padding: 12px 16px;
+ border-bottom: 1px solid #eee;
+}
+
+
+.saved-articles li:last-child {
+ border-bottom: none;
+}
+
+
+/* Responsive styles */
+@media (max-width: 768px) {
+ .app-header {
+   flex-direction: column;
+   align-items: center;
+   padding: 16px;
+ }
+  .site-title {
+   margin-right: 0;
+   margin-bottom: 12px;
+ }
+  .main-nav ul {
+   flex-wrap: wrap;
+   justify-content: center;
+ }
+  .landing-page h1 {
+   font-size: 36px;
+ }
+  .landing-page h2 {
+   font-size: 20px;
+ }
+  .question-card {
+   padding: 24px;
+ }
+  .options-grid {
+   grid-template-columns: 1fr;
+ }
+  .feature-cards {
+   grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+ }
+  .result-header h3 {
+   font-size: 28px;
+ }
+  .profile-cards {
+   grid-template-columns: 1fr;
+ }
+  .educational-page {
+   padding: 24px;
+ }
+  .investment-options {
+   grid-template-columns: 1fr;
+ }
+  .comparison-table {
+   display: block;
+   overflow-x: auto;
+ }
+  .profile-header {
+   flex-direction: column;
+   text-align: center;
+ }
+  .profile-avatar {
+   margin-right: 0;
+   margin-bottom: 16px;
+ }
+}
+
 
 
