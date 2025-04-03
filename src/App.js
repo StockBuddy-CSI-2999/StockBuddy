@@ -487,6 +487,243 @@ const LandingPage = ({ onStart }) => {
    </div>
  );
 };
+// Educational Content Pages
+const IntroductionPage = ({ onNext }) => {
+ return (
+   <div className="educational-page">
+     <div className="page-number">Page 1 of 4</div>
+     <h2 className="page-title">Introduction to Investing</h2>
+    
+     <div className="article-content">
+       <p>With the right tools and resources, investing can be much easier than you'd expect. Best of all, you don't need a lot of money to get started. Simply start out small, and gradually increase your contributions over time as your income and savings grow. The important thing is to start saving for your goals as early as you can, so your money has more time to potentially grow.</p>
+      
+       <div className="article-image">
+         <div className="placeholder-image">
+           <span>Investing Growth Illustration</span>
+         </div>
+       </div>
+      
+       <h3>Why Start Investing Early?</h3>
+       <p>The earlier you start investing, the more time your money has to potentially grow through compound interest. Even small amounts invested consistently can grow significantly over time.</p>
+      
+       <div className="key-points">
+         <h4>Key Takeaways:</h4>
+         <ul>
+           <li>Start small and increase contributions over time</li>
+           <li>Begin investing as early as possible</li>
+           <li>Consistency is more important than amount</li>
+           <li>Time in the market matters more than timing the market</li>
+         </ul>
+       </div>
+     </div>
+    
+     <div className="page-navigation">
+       <button onClick={onNext} className="next-button">Next Page</button>
+     </div>
+   </div>
+ );
+};
+
+
+const InvestmentOptionsPage = ({ onNext, onPrev }) => {
+ return (
+   <div className="educational-page">
+     <div className="page-number">Page 2 of 4</div>
+     <h2 className="page-title">What are your options?</h2>
+    
+     <div className="article-content">
+       <div className="investment-options">
+         <div className="investment-option">
+           <h3>Stocks</h3>
+           <p>When you buy a stock, you own a small piece of a company. If the company does well, the stock's value may go up, and you can sell it for a profit. But if the company struggles, the stock's value can drop.</p>
+         </div>
+        
+         <div className="investment-option">
+           <h3>Bonds</h3>
+           <p>A bond is like a loan you give to a company or government. They promise to pay you back later with interest. It's generally safer than stocks but offers lower returns.</p>
+         </div>
+        
+         <div className="investment-option">
+           <h3>Mutual Funds</h3>
+           <p>A mutual fund is a big pool of money collected from many investors. A professional manager uses this money to buy a mix of stocks, bonds, or other assets. This helps spread out risk, but you pay a fee for the management.</p>
+         </div>
+        
+         <div className="investment-option">
+           <h3>ETFs (Exchange-Traded Funds)</h3>
+           <p>ETFs are similar to mutual funds but trade like stocks on the market. They offer diversification like mutual funds but often have lower fees and more flexibility.</p>
+         </div>
+       </div>
+      
+       <div className="option-comparison">
+         <h3>Comparing Investment Options</h3>
+         <table className="comparison-table">
+           <thead>
+             <tr>
+               <th>Investment Type</th>
+               <th>Risk Level</th>
+               <th>Potential Return</th>
+               <th>Liquidity</th>
+               <th>Best For</th>
+             </tr>
+           </thead>
+           <tbody>
+             <tr>
+               <td>Stocks</td>
+               <td>High</td>
+               <td>High</td>
+               <td>High</td>
+               <td>Long-term growth</td>
+             </tr>
+             <tr>
+               <td>Bonds</td>
+               <td>Low to Moderate</td>
+               <td>Low to Moderate</td>
+               <td>Moderate</td>
+               <td>Income and stability</td>
+             </tr>
+             <tr>
+               <td>Mutual Funds</td>
+               <td>Varies</td>
+               <td>Varies</td>
+               <td>Moderate</td>
+               <td>Diversification</td>
+             </tr>
+             <tr>
+               <td>ETFs</td>
+               <td>Varies</td>
+               <td>Varies</td>
+               <td>High</td>
+               <td>Cost-effective diversification</td>
+             </tr>
+           </tbody>
+         </table>
+       </div>
+     </div>
+    
+     <div className="page-navigation">
+       <button onClick={onPrev} className="prev-button">Previous Page</button>
+       <button onClick={onNext} className="next-button">Next Page</button>
+     </div>
+   </div>
+ );
+};
+
+
+const QuestionnaireExplanationPage = ({ onNext, onPrev }) => {
+ return (
+   <div className="educational-page">
+     <div className="page-number">Page 3 of 4</div>
+     <h2 className="page-title">How is our questionnaire getting your investment journey started?</h2>
+    
+     <div className="article-content">
+       <p>Retirement should always be the first investing goal on your list. But it's also important to plan and save for other goals like a house or a child's education. Once you've defined your investing goals using StockBuddy, it's time to consider your:</p>
+      
+       <div className="questionnaire-factors">
+         <div className="factor">
+           <h3>Financial situation</h3>
+           <p>Figure out how much you're spending every month and how much is left over to save toward your goals.</p>
+         </div>
+        
+         <div className="factor">
+           <h3>Time horizon</h3>
+           <p>Determine how much time you'll need to achieve your goals. For example, if you have many years until retirement, it's a long-term goal. If you're planning to buy a home in 5 years, that's a short-term goal. The longer your time frame, the more time to potentially benefit from the power of compounding, where your earnings generate their own earnings over time.</p>
+         </div>
+        
+         <div className="factor">
+           <h3>Risk tolerance</h3>
+           <p>Think about the amount of market volatility and potential loss you're willing to accept. Your risk tolerance will likely vary depending on the time horizon for each of your goals. For example, the longer you have to reach your goal, the more time you have to weather market ups and downs, which means you may be comfortable taking on more risk.</p>
+         </div>
+       </div>
+      
+       <div className="questionnaire-diagram">
+         <div className="diagram-header">StockBuddy Questionnaire Process</div>
+         <div className="diagram-steps">
+           <div className="diagram-step">
+             <div className="step-number">1</div>
+             <div className="step-content">Assess your financial goals and timeframe</div>
+           </div>
+           <div className="diagram-step">
+             <div className="step-number">2</div>
+             <div className="step-content">Determine your risk tolerance</div>
+           </div>
+           <div className="diagram-step">
+             <div className="step-number">3</div>
+             <div className="step-content">Evaluate your investment knowledge and preferences</div>
+           </div>
+           <div className="diagram-step">
+             <div className="step-number">4</div>
+             <div className="step-content">Generate personalized investment profile</div>
+           </div>
+         </div>
+       </div>
+     </div>
+    
+     <div className="page-navigation">
+       <button onClick={onPrev} className="prev-button">Previous Page</button>
+       <button onClick={onNext} className="next-button">Next Page</button>
+     </div>
+   </div>
+ );
+};
+
+
+const MinimizeRiskPage = ({ onPrev }) => {
+ return (
+   <div className="educational-page">
+     <div className="page-number">Page 4 of 4</div>
+     <h2 className="page-title">Selecting your investments to minimize risk</h2>
+    
+     <div className="article-content">
+       <p>There are many types of investments to choose from to suit your needs, including mutual funds, exchange-traded funds (ETFs), and individual stocks and bonds. Be sure to diversify your portfolio by choosing a variety of investment types to help lower your risk and improve your chances of achieving your investment goals. Here's how:</p>
+      
+       <div className="risk-strategies">
+         <div className="strategy">
+           <h3>Invest in different asset classes</h3>
+           <p>A portfolio that includes stock, bonds, and cash can help reduce your risk of potential losses if one class underperforms. Mutual funds and ETFs offer an easy way to accomplish this because they invest in a diversified mix of individual investments.</p>
+          
+           <div className="strategy-illustration">
+             <div className="asset-allocation">
+               <div className="allocation-piece stocks" style={{width: '60%'}}>Stocks (60%)</div>
+               <div className="allocation-piece bonds" style={{width: '30%'}}>Bonds (30%)</div>
+               <div className="allocation-piece cash" style={{width: '10%'}}>Cash (10%)</div>
+             </div>
+             <div className="allocation-caption">Example of a balanced portfolio allocation</div>
+           </div>
+         </div>
+        
+         <div className="strategy">
+           <h3>Invest in different sectors</h3>
+           <p>Within each asset class, there are different sectors. For example, the stock market is divided into sectors such as technology, health care, and finance. By investing in different sectors, you can further reduce your risk.</p>
+          
+           <div className="sector-list">
+             <div className="sector">Technology</div>
+             <div className="sector">Healthcare</div>
+             <div className="sector">Finance</div>
+             <div className="sector">Consumer Goods</div>
+             <div className="sector">Energy</div>
+             <div className="sector">Real Estate</div>
+           </div>
+         </div>
+       </div>
+      
+       <div className="risk-summary">
+         <h3>Key Risk Management Strategies</h3>
+         <ul>
+           <li>Diversify across asset classes (stocks, bonds, cash)</li>
+           <li>Spread investments across different industry sectors</li>
+           <li>Consider geographical diversification (domestic and international)</li>
+           <li>Rebalance your portfolio periodically</li>
+           <li>Adjust your strategy as your time horizon changes</li>
+         </ul>
+       </div>
+     </div>
+    
+     <div className="page-navigation">
+       <button onClick={onPrev} className="prev-button">Previous Page</button>
+     </div>
+   </div>
+ );
+};
 
 
 
