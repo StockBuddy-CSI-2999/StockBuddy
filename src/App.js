@@ -725,5 +725,186 @@ const MinimizeRiskPage = ({ onPrev }) => {
  );
 };
 
+// Question Components
+const AgeQuestion = ({ answer, onChange, onNext }) => {
+  return (
+    <div className="question-card">
+      <h2>What is your age?</h2>
+      <p>Different age groups typically have different investment horizons and risk capacities.</p>
+      <div className="options-grid">
+        <label className={`radio-option ${answer === 'under25' ? 'selected' : ''}`}>
+          <input
+            type="radio"
+            name="age"
+            value="under25"
+            checked={answer === 'under25'}
+            onChange={() => onChange('under25')}
+          />
+          <span className="option-text">Under 25</span>
+        </label>
+        <label className={`radio-option ${answer === '25-35' ? 'selected' : ''}`}>
+          <input
+            type="radio"
+            name="age"
+            value="25-35"
+            checked={answer === '25-35'}
+            onChange={() => onChange('25-35')}
+          />
+          <span className="option-text">25-35</span>
+        </label>
+        <label className={`radio-option ${answer === '36-50' ? 'selected' : ''}`}>
+          <input
+            type="radio"
+            name="age"
+            value="36-50"
+            checked={answer === '36-50'}
+            onChange={() => onChange('36-50')}
+          />
+          <span className="option-text">36-50</span>
+        </label>
+        <label className={`radio-option ${answer === '51+' ? 'selected' : ''}`}>
+          <input
+            type="radio"
+            name="age"
+            value="51+"
+            checked={answer === '51+'}
+            onChange={() => onChange('51+')}
+          />
+          <span className="option-text">51+</span>
+        </label>
+      </div>
+      <div className="navigation">
+        <button
+          onClick={onNext}
+          disabled={!answer}
+          className="next-button"
+        >
+          Next
+        </button>
+      </div>
+    </div>
+  );
+};
 
+const GoalQuestion = ({ answer, onChange, onNext, onPrev }) => {
+  return (
+    <div className="question-card">
+      <h2>What is your primary investment goal?</h2>
+      <p>Your timeframe and objectives will help determine the most suitable investment strategy.</p>
+      <div className="options-grid">
+        <label className={`radio-option ${answer === 'short-term' ? 'selected' : ''}`}>
+          <input
+            type="radio"
+            name="goal"
+            value="short-term"
+            checked={answer === 'short-term'}
+            onChange={() => onChange('short-term')}
+          />
+          <span className="option-text">Short-term savings (1-3 years, e.g., emergency fund, big purchase)</span>
+        </label>
+        <label className={`radio-option ${answer === 'medium-term' ? 'selected' : ''}`}>
+          <input
+            type="radio"
+            name="goal"
+            value="medium-term"
+            checked={answer === 'medium-term'}
+            onChange={() => onChange('medium-term')}
+          />
+          <span className="option-text">Medium-term growth (3-10 years, e.g., buying a house, education)</span>
+        </label>
+        <label className={`radio-option ${answer === 'long-term' ? 'selected' : ''}`}>
+          <input
+            type="radio"
+            name="goal"
+            value="long-term"
+            checked={answer === 'long-term'}
+            onChange={() => onChange('long-term')}
+          />
+          <span className="option-text">Long-term wealth accumulation (10+ years, e.g., retirement, financial independence)</span>
+        </label>
+      </div>
+      <div className="navigation">
+        <button
+          onClick={onPrev}
+          className="prev-button"
+        >
+          Previous
+        </button>
+        <button
+          onClick={onNext}
+          disabled={!answer}
+          className="next-button"
+        >
+          Next
+        </button>
+      </div>
+    </div>
+  );
+};
+
+const SavingsQuestion = ({ answer, onChange, onNext, onPrev }) => {
+  return (
+    <div className="question-card">
+      <h2>How much do you currently have saved for investing?</h2>
+      <p>Your current savings level helps determine appropriate investment vehicles.</p>
+      <div className="options-grid">
+        <label className={`radio-option ${answer === 'less1k' ? 'selected' : ''}`}>
+          <input
+            type="radio"
+            name="savings"
+            value="less1k"
+            checked={answer === 'less1k'}
+            onChange={() => onChange('less1k')}
+          />
+          <span className="option-text">Less than $1,000</span>
+        </label>
+        <label className={`radio-option ${answer === '1k-10k' ? 'selected' : ''}`}>
+          <input
+            type="radio"
+            name="savings"
+            value="1k-10k"
+            checked={answer === '1k-10k'}
+            onChange={() => onChange('1k-10k')}
+          />
+          <span className="option-text">$1,000 - $10,000</span>
+        </label>
+        <label className={`radio-option ${answer === '10k-50k' ? 'selected' : ''}`}>
+          <input
+            type="radio"
+            name="savings"
+            value="10k-50k"
+            checked={answer === '10k-50k'}
+            onChange={() => onChange('10k-50k')}
+          />
+          <span className="option-text">$10,000 - $50,000</span>
+        </label>
+        <label className={`radio-option ${answer === 'more50k' ? 'selected' : ''}`}>
+          <input
+            type="radio"
+            name="savings"
+            value="more50k"
+            checked={answer === 'more50k'}
+            onChange={() => onChange('more50k')}
+          />
+          <span className="option-text">More than $50,000</span>
+        </label>
+      </div>
+      <div className="navigation">
+        <button
+          onClick={onPrev}
+          className="prev-button"
+        >
+          Previous
+        </button>
+        <button
+          onClick={onNext}
+          disabled={!answer}
+          className="next-button"
+        >
+          Next
+        </button>
+      </div>
+    </div>
+  );
+};
 
