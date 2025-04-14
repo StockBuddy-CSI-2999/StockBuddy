@@ -1,8 +1,49 @@
 // App.js
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import './App.css';
+import { initializeApp } from 'firebase/app';
+import { 
+  getAuth, 
+  createUserWithEmailAndPassword, 
+  signInWithEmailAndPassword, 
+  signOut,
+  onAuthStateChanged,
+  updateProfile
+} from 'firebase/auth';
+import { 
+  getFirestore,
+  collection,
+  addDoc,
+  getDocs,
+  doc,
+  getDoc,
+  setDoc,
+  updateDoc,
+  serverTimestamp,
+  query,
+  orderBy,
+  where,
+  deleteDoc
+} from 'firebase/firestore';
+
+// Firebase configuration
+const firebaseConfig = {
+  apiKey: "AIzaSyCRiWl1VRPHABfqYEdEmmcbvW_Q-rz04ds",
+  authDomain: "stockbuddy-497e7.firebaseapp.com",
+  projectId: "stockbuddy-497e7",
+  storageBucket: "stockbuddy-497e7.firebasestorage.app",
+  messagingSenderId: "372507670843",
+  appId: "1:372507670843:web:e9e9013275a5c5bd7c1f1e",
+  measurementId: "G-1HK4VG4R40"
+};
+
+// Initialize Firebase
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getFirestore(app);
 
 const App = () => {
+  // Original state variables
   const [step, setStep] = useState(0);
   const [page, setPage] = useState(0); // Educational content page tracker
   const [answers, setAnswers] = useState({
@@ -17,49 +58,33 @@ const App = () => {
   const [result, setResult] = useState(null);
   const [activeTab, setActiveTab] = useState('questionnaire'); // For navigation between features
   
-  // New states for additional features
+  // Enhanced calculator states
   const [investmentAmount, setInvestmentAmount] = useState(1000);
   const [investmentYears, setInvestmentYears] = useState(10);
   const [investmentRate, setInvestmentRate] = useState(7);
+  const [monthlyContribution, setMonthlyContribution] = useState(100);
   const [calculatedAmount, setCalculatedAmount] = useState(null);
   
-  // For community forum
-  const [forumPosts, setForumPosts] = useState([
-    {
-      id: 1,
-      author: 'InvestorJane',
-      title: 'Best ETFs for beginners?',
-      content: 'I\'m new to investing and looking for recommendations on good ETFs for someone just starting out. Any suggestions?',
-      replies: [
-        { author: 'FinanceGuru', content: 'I\'d recommend looking at broad market ETFs like VTI or SPY to start with. They give you exposure to the entire market with low fees.' },
-        { author: 'RetirementPlanner', content: 'Don\'t forget about bond ETFs like AGG to balance your portfolio if you\'re concerned about volatility.' }
-      ],
-      timestamp: '2 days ago'
-    },
-    {
-      id: 2,
-      author: 'NewSaver',
-      title: 'How much should I be saving each month?',
-      content: 'I\'m 25 and just started my first job. How much of my income should I be putting away for investments?',
-      replies: [
-        { author: 'WealthBuilder', content: 'Try to save at least 15-20% of your income. Start with your employer 401k match if available, then max out a Roth IRA, and then consider additional investments.' },
-      ],
-      timestamp: '5 days ago'
-    },
-    {
-      id: 3,
-      author: 'RetirementDreamer',
-      title: 'Is real estate a good investment?',
-      content: 'I\'m considering buying a rental property as an investment. Does anyone have experience with this versus stock market investing?',
-      replies: [
-        { author: 'PropertyPro', content: 'Real estate can be a great addition to your portfolio, but it\'s more work than passive investing. Be prepared for maintenance costs and potential vacancies.' },
-        { author: 'DiversifiedInvestor', content: 'You might want to look into REITs first. They give you exposure to real estate without the hassle of being a landlord.' }
-      ],
-      timestamp: '1 week ago'
-    }
-  ]);
+  // Authentication states
+  const [user, setUser] = useState(null);
+  const [authModalOpen, setAuthModalOpen] = useState(false);
+  const [authMode, setAuthMode] = useState('login'); // 'login' or 'register'
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [displayName, setDisplayName] = useState('');
+  const [authError, setAuthError] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
   
-  // For user profile
+  // Forum states
+  const [forumPosts, setForumPosts] = useState([]);
+  const [isPostModalOpen, setIsPostModalOpen] = useState(false);
+  const [newPostTitle, setNewPostTitle] = useState('');
+  const [newPostContent, setNewPostContent] = useState('');
+  const [selectedPost, setSelectedPost] = useState(null);
+  const [postReply, setPostReply] = useState('');
+  const [forumFilter, setForumFilter] = useState('recent');
+  
+  // User profile state
   const [userProfile, setUserProfile] = useState({
     name: 'Guest User',
     email: 'guest@example.com',
@@ -67,6 +92,244 @@ const App = () => {
     savedArticles: [],
     portfolioValue: 0
   });
+
+  // Monitor auth state
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
+      setUser(currentUser);
+      if (currentUser) {
+        fetchUserProfile(currentUser.uid);
+      } else {
+        setUserProfile({
+          name: 'Guest User',
+          email: 'guest@example.com',
+          investmentGoals: [],
+          savedArticles: [],
+          portfolioValue: 0
+        });
+      }
+    });
+    
+    return () => unsubscribe();
+  }, []);
+  
+  // Fetch forum posts
+  useEffect(() => {
+    fetchForumPosts();
+  }, [forumFilter]);
+  
+  // Fetch forum posts from Firestore
+  const fetchForumPosts = async () => {
+    try {
+      let q;
+      
+      if (forumFilter === 'recent') {
+        q = query(collection(db, "forumPosts"), orderBy("timestamp", "desc"));
+      } else if (forumFilter === 'mostReplies') {
+        q = query(collection(db, "forumPosts"), orderBy("replyCount", "desc"));
+      } else if (forumFilter === 'beginner') {
+        q = query(collection(db, "forumPosts"), where("category", "==", "beginner"), orderBy("timestamp", "desc"));
+      } else if (forumFilter === 'advanced') {
+        q = query(collection(db, "forumPosts"), where("category", "==", "advanced"), orderBy("timestamp", "desc"));
+      }
+      
+      const querySnapshot = await getDocs(q);
+      const posts = [];
+      
+      for (const docSnapshot of querySnapshot.docs) {
+        const postData = docSnapshot.data();
+        const repliesQuery = query(collection(db, "forumPosts", docSnapshot.id, "replies"), orderBy("timestamp", "asc"));
+        const repliesSnapshot = await getDocs(repliesQuery);
+        
+        const replies = repliesSnapshot.docs.map(replyDoc => ({
+          id: replyDoc.id,
+          ...replyDoc.data()
+        }));
+        
+        posts.push({
+          id: docSnapshot.id,
+          ...postData,
+          replies
+        });
+      }
+      
+      setForumPosts(posts);
+    } catch (error) {
+      console.error("Error fetching forum posts: ", error);
+    }
+  };
+  
+  // Fetch user profile from Firestore
+  const fetchUserProfile = async (userId) => {
+    try {
+      const userDoc = await getDoc(doc(db, "users", userId));
+      
+      if (userDoc.exists()) {
+        setUserProfile({
+          ...userDoc.data(),
+          name: auth.currentUser.displayName || 'User'
+        });
+      } else {
+        // Create a new user profile if it doesn't exist
+        const newProfile = {
+          name: auth.currentUser.displayName || 'User',
+          email: auth.currentUser.email,
+          investmentGoals: [],
+          savedArticles: [],
+          portfolioValue: 0
+        };
+        
+        await setDoc(doc(db, "users", userId), newProfile);
+        setUserProfile(newProfile);
+      }
+    } catch (error) {
+      console.error("Error fetching user profile: ", error);
+    }
+  };
+  
+  // Authentication handlers
+  const handleRegister = async (e) => {
+    e.preventDefault();
+    setIsLoading(true);
+    setAuthError('');
+    
+    try {
+      const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+      await updateProfile(auth.currentUser, { displayName });
+      
+      // Create user document in Firestore
+      await addDoc(collection(db, "users"), {
+        uid: userCredential.user.uid,
+        name: displayName,
+        email: email,
+        investmentGoals: [],
+        savedArticles: [],
+        portfolioValue: 0,
+        createdAt: serverTimestamp()
+      });
+      
+      setAuthModalOpen(false);
+      setEmail('');
+      setPassword('');
+      setDisplayName('');
+    } catch (error) {
+      setAuthError(error.message);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+  
+  const handleLogin = async (e) => {
+    e.preventDefault();
+    setIsLoading(true);
+    setAuthError('');
+    
+    try {
+      await signInWithEmailAndPassword(auth, email, password);
+      setAuthModalOpen(false);
+      setEmail('');
+      setPassword('');
+    } catch (error) {
+      setAuthError(error.message);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+  
+  const handleLogout = async () => {
+    try {
+      await signOut(auth);
+    } catch (error) {
+      console.error("Error signing out: ", error);
+    }
+  };
+  
+  // Forum post handlers
+  const handleCreatePost = async () => {
+    if (!user) {
+      setAuthModalOpen(true);
+      return;
+    }
+    
+    if (!newPostTitle.trim() || !newPostContent.trim()) return;
+    
+    try {
+      const newPost = {
+        title: newPostTitle,
+        content: newPostContent,
+        author: user.displayName || 'User',
+        authorId: user.uid,
+        timestamp: serverTimestamp(),
+        category: 'beginner', // Default category
+        replyCount: 0
+      };
+      
+      await addDoc(collection(db, "forumPosts"), newPost);
+      
+      setNewPostTitle('');
+      setNewPostContent('');
+      setIsPostModalOpen(false);
+      fetchForumPosts();
+    } catch (error) {
+      console.error("Error creating post: ", error);
+    }
+  };
+  
+  const handlePostReply = async (postId) => {
+    if (!user) {
+      setAuthModalOpen(true);
+      return;
+    }
+    
+    if (!postReply.trim()) return;
+    
+    try {
+      const replyData = {
+        content: postReply,
+        author: user.displayName || 'User',
+        authorId: user.uid,
+        timestamp: serverTimestamp()
+      };
+      
+      // Add reply to the subcollection
+      await addDoc(collection(db, "forumPosts", postId, "replies"), replyData);
+      
+      // Update post reply count
+      const postRef = doc(db, "forumPosts", postId);
+      const postDoc = await getDoc(postRef);
+      
+      if (postDoc.exists()) {
+        await updateDoc(postRef, {
+          replyCount: (postDoc.data().replyCount || 0) + 1
+        });
+      }
+      
+      setPostReply('');
+      setSelectedPost(null);
+      fetchForumPosts();
+    } catch (error) {
+      console.error("Error posting reply: ", error);
+    }
+  };
+  
+  // Investment calculator with monthly contributions
+  const calculateInvestment = () => {
+    // Calculate compound interest with monthly contributions
+    let futureValue = investmentAmount;
+    const monthlyRate = investmentRate / 100 / 12;
+    const totalMonths = investmentYears * 12;
+    
+    // Formula: FV = P(1+r)^n + PMT * ((1+r)^n - 1) / r
+    // Where FV = Future Value, P = Principal, r = monthly rate, n = total months, PMT = monthly payment
+    if (monthlyContribution > 0) {
+      futureValue = futureValue * Math.pow(1 + monthlyRate, totalMonths) + 
+                     monthlyContribution * (Math.pow(1 + monthlyRate, totalMonths) - 1) / monthlyRate;
+    } else {
+      futureValue = futureValue * Math.pow(1 + monthlyRate, totalMonths);
+    }
+    
+    setCalculatedAmount(futureValue.toFixed(2));
+  };
 
   const handleAnswerChange = (question, answer) => {
     const newAnswers = { ...answers, [question]: answer };
@@ -112,12 +375,6 @@ const App = () => {
     });
     setResult(null);
     setStep(0);
-  };
-  
-  const calculateInvestment = () => {
-    // Simple compound interest calculation
-    const amount = investmentAmount * Math.pow(1 + (investmentRate / 100), investmentYears);
-    setCalculatedAmount(amount.toFixed(2));
   };
   
   const nextEducationPage = () => {
@@ -215,7 +472,7 @@ const App = () => {
     }
   };
   
-  // Render calculator component
+  // Render calculator component with monthly contributions
   const renderCalculator = () => {
     return (
       <div className="calculator-container">
@@ -230,6 +487,17 @@ const App = () => {
               id="investment-amount"
               value={investmentAmount}
               onChange={(e) => setInvestmentAmount(Number(e.target.value))}
+              min="0"
+            />
+          </div>
+          
+          <div className="input-group">
+            <label htmlFor="monthly-contribution">Monthly Contribution ($)</label>
+            <input
+              type="number"
+              id="monthly-contribution"
+              value={monthlyContribution}
+              onChange={(e) => setMonthlyContribution(Number(e.target.value))}
               min="0"
             />
           </div>
@@ -266,7 +534,34 @@ const App = () => {
           <div className="calculator-result">
             <h3>Projected Value</h3>
             <div className="result-value">${Number(calculatedAmount).toLocaleString()}</div>
-            <p>Your initial investment of ${investmentAmount.toLocaleString()} could grow to ${Number(calculatedAmount).toLocaleString()} after {investmentYears} years at an average annual return of {investmentRate}%.</p>
+            <p>
+              Your initial investment of ${investmentAmount.toLocaleString()} 
+              {monthlyContribution > 0 ? ` plus a monthly contribution of $${monthlyContribution.toLocaleString()}` : ''} 
+              could grow to ${Number(calculatedAmount).toLocaleString()} after {investmentYears} years 
+              at an average annual return of {investmentRate}%.
+            </p>
+            <div className="calculator-breakdown">
+              <h4>Investment Breakdown</h4>
+              <div className="breakdown-chart">
+                <div className="breakdown-item principal">
+                  <span className="breakdown-color"></span>
+                  <span className="breakdown-label">Initial Investment: ${investmentAmount.toLocaleString()}</span>
+                </div>
+                {monthlyContribution > 0 && (
+                  <div className="breakdown-item contributions">
+                    <span className="breakdown-color"></span>
+                    <span className="breakdown-label">Total Contributions: ${(monthlyContribution * investmentYears * 12).toLocaleString()}</span>
+                  </div>
+                )}
+                <div className="breakdown-item growth">
+                  <span className="breakdown-color"></span>
+                  <span className="breakdown-label">
+                    Investment Growth: $
+                    {(Number(calculatedAmount) - investmentAmount - (monthlyContribution * investmentYears * 12)).toLocaleString()}
+                  </span>
+                </div>
+              </div>
+            </div>
             <p className="disclaimer">This is a simplified calculation for educational purposes only. Actual results may vary due to various factors including market fluctuations, fees, and taxes.</p>
           </div>
         )}
@@ -280,11 +575,25 @@ const App = () => {
       <div className="profile-container">
         <div className="profile-header">
           <div className="profile-avatar">
-            <span>{userProfile.name.charAt(0)}</span>
+            <span>{user ? user.displayName?.charAt(0) || user.email.charAt(0) : 'G'}</span>
           </div>
           <div className="profile-details">
-            <h2>{userProfile.name}</h2>
-            <p>{userProfile.email}</p>
+            <h2>{user ? user.displayName || user.email : 'Guest User'}</h2>
+            <p>{user ? user.email : 'Not signed in'}</p>
+            {!user && (
+              <button 
+                className="signin-button"
+                onClick={() => {
+                  setAuthModalOpen(true);
+                  setAuthMode('login');
+                }}
+              >
+                Sign In
+              </button>
+            )}
+            {user && (
+              <button className="signout-button" onClick={handleLogout}>Sign Out</button>
+            )}
           </div>
         </div>
         
@@ -306,7 +615,9 @@ const App = () => {
           <div className="portfolio-summary">
             <div className="portfolio-stat">
               <span className="stat-label">Portfolio Value</span>
-              <span className="stat-value">$0.00</span>
+              <span className="stat-value">
+                ${user ? userProfile.portfolioValue.toLocaleString() : '0.00'}
+              </span>
             </div>
             <div className="portfolio-stat">
               <span className="stat-label">Monthly Contribution</span>
@@ -317,12 +628,16 @@ const App = () => {
               <span className="stat-value">0%</span>
             </div>
           </div>
-          <p className="profile-note">Feature coming soon: Link your investment accounts to track your portfolio performance.</p>
+          {user ? (
+            <button className="update-portfolio-button">Update Portfolio</button>
+          ) : (
+            <p className="profile-note">Sign in to track your portfolio performance.</p>
+          )}
         </div>
         
         <div className="profile-section">
           <h3>Saved Articles</h3>
-          {userProfile.savedArticles.length > 0 ? (
+          {user && userProfile.savedArticles && userProfile.savedArticles.length > 0 ? (
             <ul className="saved-articles">
               {userProfile.savedArticles.map((article, index) => (
                 <li key={index}>{article}</li>
@@ -336,7 +651,7 @@ const App = () => {
     );
   };
   
-  // Render community forum component
+  // Render community forum component with Firebase integration
   const renderCommunityForum = () => {
     return (
       <div className="forum-container">
@@ -344,47 +659,128 @@ const App = () => {
         <p>Connect with other investors, ask questions, and share experiences.</p>
         
         <div className="forum-post-button">
-          <button className="post-button">+ New Discussion</button>
+          <button 
+            className="post-button" 
+            onClick={() => user ? setIsPostModalOpen(true) : setAuthModalOpen(true)}
+          >
+            + New Discussion
+          </button>
         </div>
         
         <div className="forum-filter">
-          <select className="filter-dropdown">
-            <option>Recent Discussions</option>
-            <option>Most Replies</option>
-            <option>Beginner Questions</option>
-            <option>Advanced Topics</option>
+          <select 
+            className="filter-dropdown"
+            value={forumFilter}
+            onChange={(e) => setForumFilter(e.target.value)}
+          >
+            <option value="recent">Recent Discussions</option>
+            <option value="mostReplies">Most Replies</option>
+            <option value="beginner">Beginner Questions</option>
+            <option value="advanced">Advanced Topics</option>
           </select>
         </div>
         
-        <div className="forum-posts">
-          {forumPosts.map(post => (
-            <div className="forum-post" key={post.id}>
-              <div className="post-header">
-                <h3 className="post-title">{post.title}</h3>
-                <span className="post-meta">Posted by {post.author} · {post.timestamp}</span>
+        {isLoading ? (
+          <div className="loading-spinner">Loading discussions...</div>
+        ) : (
+          <div className="forum-posts">
+            {forumPosts.length === 0 ? (
+              <div className="empty-forum">
+                <p>No discussions yet. Be the first to start a conversation!</p>
               </div>
-              <p className="post-content">{post.content}</p>
-              
-              <div className="post-actions">
-                <button className="action-button">Reply</button>
-                <span className="reply-count">{post.replies.length} replies</span>
-              </div>
-              
-              {post.replies.length > 0 && (
-                <div className="post-replies">
-                  {post.replies.map((reply, index) => (
-                    <div className="reply" key={index}>
-                      <span className="reply-author">{reply.author}</span>
-                      <p className="reply-content">{reply.content}</p>
+            ) : (
+              forumPosts.map(post => (
+                <div className="forum-post" key={post.id}>
+                  <div className="post-header">
+                    <h3 className="post-title">{post.title}</h3>
+                    <span className="post-meta">
+                      Posted by {post.author} · {formatTimestamp(post.timestamp)}
+                    </span>
+                  </div>
+                  <p className="post-content">{post.content}</p>
+                  
+                  <div className="post-actions">
+                    <button 
+                      className="action-button"
+                      onClick={() => {
+                        if (user) {
+                          setSelectedPost(post.id);
+                        } else {
+                          setAuthModalOpen(true);
+                        }
+                      }}
+                    >
+                      Reply
+                    </button>
+                    <span className="reply-count">{post.replies?.length || 0} replies</span>
+                  </div>
+                  
+                  {post.replies && post.replies.length > 0 && (
+                    <div className="post-replies">
+                      {post.replies.map((reply, index) => (
+                        <div className="reply" key={index}>
+                          <span className="reply-author">{reply.author}</span>
+                          <span className="reply-date">{formatTimestamp(reply.timestamp)}</span>
+                          <p className="reply-content">{reply.content}</p>
+                        </div>
+                      ))}
                     </div>
-                  ))}
+                  )}
+                  
+                  {selectedPost === post.id && (
+                    <div className="reply-form">
+                      <textarea
+                        placeholder="Write your reply..."
+                        value={postReply}
+                        onChange={(e) => setPostReply(e.target.value)}
+                        rows="3"
+                      ></textarea>
+                      <div className="reply-actions">
+                        <button 
+                          className="cancel-reply-button"
+                          onClick={() => {
+                            setSelectedPost(null);
+                            setPostReply('');
+                          }}
+                        >
+                          Cancel
+                        </button>
+                        <button 
+                          className="submit-reply-button"
+                          onClick={() => handlePostReply(post.id)}
+                          disabled={!postReply.trim()}
+                        >
+                          Post Reply
+                        </button>
+                      </div>
+                    </div>
+                  )}
                 </div>
-              )}
-            </div>
-          ))}
-        </div>
+              ))
+            )}
+          </div>
+        )}
       </div>
     );
+  };
+  
+  // Format Firebase timestamp
+  const formatTimestamp = (timestamp) => {
+    if (!timestamp) return 'Just now';
+    
+    const date = timestamp.toDate ? timestamp.toDate() : new Date(timestamp);
+    const now = new Date();
+    const diffMs = now - date;
+    const diffMins = Math.floor(diffMs / (1000 * 60));
+    const diffHours = Math.floor(diffMs / (1000 * 60 * 60));
+    const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
+    
+    if (diffMins < 1) return 'Just now';
+    if (diffMins < 60) return `${diffMins} minute${diffMins > 1 ? 's' : ''} ago`;
+    if (diffHours < 24) return `${diffHours} hour${diffHours > 1 ? 's' : ''} ago`;
+    if (diffDays < 7) return `${diffDays} day${diffDays > 1 ? 's' : ''} ago`;
+    
+    return date.toLocaleDateString();
   };
   
   // Main application render
@@ -402,6 +798,34 @@ const App = () => {
             <li className={activeTab === 'profile' ? 'active' : ''} onClick={() => setActiveTab('profile')}>Profile</li>
           </ul>
         </nav>
+        
+        <div className="user-menu">
+          {user ? (
+            <div className="user-dropdown">
+              <button className="user-button">
+                <span className="user-initial">{user.displayName?.charAt(0) || user.email.charAt(0)}</span>
+              </button>
+              <div className="dropdown-content">
+                <div className="dropdown-user-info">
+                  <span className="dropdown-name">{user.displayName || 'User'}</span>
+                  <span className="dropdown-email">{user.email}</span>
+                </div>
+                <button className="dropdown-item" onClick={() => setActiveTab('profile')}>Your Profile</button>
+                <button className="dropdown-item" onClick={handleLogout}>Sign Out</button>
+              </div>
+            </div>
+          ) : (
+            <button 
+              className="signin-button header-signin"
+              onClick={() => {
+                setAuthModalOpen(true);
+                setAuthMode('login');
+              }}
+            >
+              Sign In
+            </button>
+          )}
+        </div>
       </div>
       
       <div className="container">
@@ -429,6 +853,179 @@ const App = () => {
         {activeTab === 'community' && renderCommunityForum()}
         {activeTab === 'profile' && renderUserProfile()}
       </div>
+      
+      {/* Authentication Modal */}
+      {authModalOpen && (
+        <div className="modal-overlay">
+          <div className="auth-modal">
+          <div className="modal-header">
+              <h2>{authMode === 'login' ? 'Sign In' : 'Create Account'}</h2>
+              <button className="close-button" onClick={() => setAuthModalOpen(false)}>×</button>
+            </div>
+            
+            <div className="modal-tabs">
+              <button 
+                className={`tab-button ${authMode === 'login' ? 'active' : ''}`}
+                onClick={() => setAuthMode('login')}
+              >
+                Sign In
+              </button>
+              <button 
+                className={`tab-button ${authMode === 'register' ? 'active' : ''}`}
+                onClick={() => setAuthMode('register')}
+              >
+                Register
+              </button>
+            </div>
+            
+            {authError && <div className="auth-error">{authError}</div>}
+            
+            {authMode === 'login' ? (
+              <form className="auth-form" onSubmit={handleLogin}>
+                <div className="form-group">
+                  <label htmlFor="email">Email</label>
+                  <input
+                    type="email"
+                    id="email"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    required
+                  />
+                </div>
+                
+                <div className="form-group">
+                  <label htmlFor="password">Password</label>
+                  <input
+                    type="password"
+                    id="password"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    required
+                  />
+                </div>
+                
+                <button 
+                  type="submit" 
+                  className="auth-button"
+                  disabled={isLoading}
+                >
+                  {isLoading ? 'Signing In...' : 'Sign In'}
+                </button>
+              </form>
+            ) : (
+              <form className="auth-form" onSubmit={handleRegister}>
+                <div className="form-group">
+                  <label htmlFor="displayName">Name</label>
+                  <input
+                    type="text"
+                    id="displayName"
+                    value={displayName}
+                    onChange={(e) => setDisplayName(e.target.value)}
+                    required
+                  />
+                </div>
+                
+                <div className="form-group">
+                  <label htmlFor="register-email">Email</label>
+                  <input
+                    type="email"
+                    id="register-email"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    required
+                  />
+                </div>
+                
+                <div className="form-group">
+                  <label htmlFor="register-password">Password</label>
+                  <input
+                    type="password"
+                    id="register-password"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    required
+                    minLength="6"
+                  />
+                </div>
+                
+                <button 
+                  type="submit" 
+                  className="auth-button"
+                  disabled={isLoading}
+                >
+                  {isLoading ? 'Creating Account...' : 'Create Account'}
+                </button>
+              </form>
+            )}
+          </div>
+        </div>
+      )}
+      
+      {/* Create Post Modal */}
+      {isPostModalOpen && (
+        <div className="modal-overlay">
+          <div className="post-modal">
+            <div className="modal-header">
+              <h2>Start a New Discussion</h2>
+              <button className="close-button" onClick={() => setIsPostModalOpen(false)}>×</button>
+            </div>
+            
+            <form className="post-form">
+              <div className="form-group">
+                <label htmlFor="post-title">Title</label>
+                <input
+                  type="text"
+                  id="post-title"
+                  value={newPostTitle}
+                  onChange={(e) => setNewPostTitle(e.target.value)}
+                  placeholder="What's your question or topic?"
+                  required
+                />
+              </div>
+              
+              <div className="form-group">
+                <label htmlFor="post-content">Content</label>
+                <textarea
+                  id="post-content"
+                  value={newPostContent}
+                  onChange={(e) => setNewPostContent(e.target.value)}
+                  placeholder="Provide details about your question or topic..."
+                  rows="5"
+                  required
+                ></textarea>
+              </div>
+              
+              <div className="form-group">
+                <label htmlFor="post-category">Category</label>
+                <select id="post-category">
+                  <option value="beginner">Beginner Question</option>
+                  <option value="advanced">Advanced Topic</option>
+                  <option value="discussion">General Discussion</option>
+                  <option value="strategy">Strategy</option>
+                </select>
+              </div>
+              
+              <div className="post-form-actions">
+                <button 
+                  type="button" 
+                  className="cancel-button"
+                  onClick={() => setIsPostModalOpen(false)}
+                >
+                  Cancel
+                </button>
+                <button 
+                  type="button" 
+                  className="submit-post-button"
+                  onClick={handleCreatePost}
+                  disabled={!newPostTitle.trim() || !newPostContent.trim()}
+                >
+                  Post Discussion
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
       
       <footer className="app-footer">
         <div className="footer-content">
@@ -501,9 +1098,7 @@ const IntroductionPage = ({ onNext }) => {
         <p>With the right tools and resources, investing can be much easier than you'd expect. Best of all, you don't need a lot of money to get started. Simply start out small, and gradually increase your contributions over time as your income and savings grow. The important thing is to start saving for your goals as early as you can, so your money has more time to potentially grow.</p>
         
         <div className="article-image">
-          <div className="placeholder-image">
-            <span>Investing Growth Illustration</span>
-          </div>
+          <img src="/images/investment-growth.jpg" alt="Investment Growth Chart" />
         </div>
         
         <h3>Why Start Investing Early?</h3>
@@ -554,6 +1149,10 @@ const InvestmentOptionsPage = ({ onNext, onPrev }) => {
             <h3>ETFs (Exchange-Traded Funds)</h3>
             <p>ETFs are similar to mutual funds but trade like stocks on the market. They offer diversification like mutual funds but often have lower fees and more flexibility.</p>
           </div>
+        </div>
+        
+        <div className="article-image">
+          <img src="/images/investment-options.jpg" alt="Different investment options illustration" />
         </div>
         
         <div className="option-comparison">
@@ -619,6 +1218,10 @@ const QuestionnaireExplanationPage = ({ onNext, onPrev }) => {
       <div className="article-content">
         <p>Retirement should always be the first investing goal on your list. But it's also important to plan and save for other goals like a house or a child's education. Once you've defined your investing goals using StockBuddy, it's time to consider your:</p>
         
+        <div className="article-image">
+          <img src="/images/investment-journey.jpg" alt="Investment journey roadmap" />
+        </div>
+        
         <div className="questionnaire-factors">
           <div className="factor">
             <h3>Financial situation</h3>
@@ -675,6 +1278,10 @@ const MinimizeRiskPage = ({ onPrev }) => {
       
       <div className="article-content">
         <p>There are many types of investments to choose from to suit your needs, including mutual funds, exchange-traded funds (ETFs), and individual stocks and bonds. Be sure to diversify your portfolio by choosing a variety of investment types to help lower your risk and improve your chances of achieving your investment goals. Here's how:</p>
+        
+        <div className="article-image">
+          <img src="/images/portfolio-diversification.jpg" alt="Portfolio diversification illustration" />
+        </div>
         
         <div className="risk-strategies">
           <div className="strategy">
